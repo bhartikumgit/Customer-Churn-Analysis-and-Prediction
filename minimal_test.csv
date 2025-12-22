@@ -1,0 +1,4 @@
+Gender,Age,Married,State,Tenure_in_Months,Phone_Service,Internet_Service,Monthly_Charge,CustomerID
+Male,35,No,Delhi,27,Yes,Yes,65.5999984741211,test1
+Female,45,Yes,Maharashtra,13,Yes,Yes,-4.0,test2
+Male,51,No,West Bengal,35,Yes,Yes,73.9000015258789,test3

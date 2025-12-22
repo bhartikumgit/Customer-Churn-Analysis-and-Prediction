@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analyze Dataset</title>
+  <style>
+    body {
+      font-family: 'Inter', Arial, sans-serif;
+      background: linear-gradient(135deg, #fff7ed, #fde68a);
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    .box {
+      background: white;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      animation: fadeIn 1s ease-out;
+      max-width: 90%;
+      width: 400px;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      color: #1e293b;
+      font-size: 24px;
+    }
+
+    p {
+      color: #1e293b;
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    input[type="file"] {
+      margin: 20px 0;
+    }
+
+    button {
+      display: block;
+      margin: 15px auto;
+      padding: 15px;
+      background: #f97316;
+      color: white;
+      border-radius: 8px;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    button:hover {
+      background: #ea580c;
+      transform: translateY(-3px);
+    }
+
+    a {
+      color: #2563eb;
+      text-decoration: none;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>Analyze Dataset</h1>
+    <p>Upload a CSV or Excel file to analyze churn patterns, percentages, reasons, and demographics.</p>
+
+    <form method="post" enctype="multipart/form-data">
+      <input type="file" name="dataset" accept=".csv,.xls,.xlsx" required />
+      <button type="submit">Analyze</button>
+    </form>
+
+    <a href="/">Back to Home</a>
+  </div>
+</body>
+</html>

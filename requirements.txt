@@ -1,0 +1,6 @@
+Flask>=2.0
+scikit-learn
+pandas
+numpy
+openpyxl
+gunicorn  # optional for production

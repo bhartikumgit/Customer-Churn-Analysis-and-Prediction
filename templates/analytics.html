@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Churn Analytics Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: Inter, Arial, sans-serif; margin:0; background:#f3f6fb; color:#0f1724; }
+    header { background:#0f1724; color:white; padding:18px 28px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 8px 30px rgba(2,6,23,0.08); }
+    header h1 { margin:0; font-size:20px; letter-spacing:0.2px; }
+    .card { background:white; border-radius:12px; padding:12px; box-shadow:0 6px 20px rgba(2,6,23,0.06); }
+    .stat { font-size:24px; font-weight:700; }
+    .muted { color:#64748b; font-size:13px; }
+    .note { font-size:13px; color:#475569; margin-top:8px; }
+    pre.json-box { max-height:240px; overflow:auto; background:#fbfdff; padding:10px; border-radius:8px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1><i class="fas fa-chart-pie"></i> Churn Analytics</h1>
+    <div style="font-size:14px; color:#c7d2fe">Internal dashboard</div>
+  </header>
+
+  <main class="container py-4">
+    <a href="/" class="btn btn-primary me-2"><i class="fas fa-home"></i> Back to Home</a>
+    <button type="button" class="btn btn-outline-secondary" onclick="window.history.back()"><i class="fas fa-arrow-left"></i> Back</button>
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="muted">Customers analysed</div>
+              <div class="stat">{{ analytics.n_customers if analytics.available else '—' }}</div>
+            </div>
+            <div class="text-end">
+              <div class="muted">Churn rate</div>
+              <div class="stat text-danger">{{ "%.2f%%"|format(analytics.churn_rate*100) if analytics.available else '—' }}</div>
+            </div>
+          </div>
+          <div class="mt-3">
+            <canvas id="churnPie" width="400" height="150"></canvas>
+          </div>
+          <div class="note">This pie shows predicted churn vs stay across the loaded dataset.</div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card mb-3">
+          <h5 class="muted"><i class="fas fa-lightbulb"></i> Top Recommendations</h5>
+          <ul class="list-group">
+            {% if analytics.available and analytics.recommendations %}
+              {% for r in analytics.recommendations %}
+                <li class="list-group-item">{{ r }}</li>
+              {% endfor %}
+            {% else %}
+              <li class="list-group-item">No recommendations available.</li>
+            {% endif %}
+          </ul>
+        </div>
+
+        <div class="card">
+          <h5 class="muted"><i class="fas fa-star"></i> Top Global Features</h5>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Feature</th>
+                <th>Importance</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if analytics.available and analytics.top_global_features %}
+                {% for f, v in analytics.top_global_features %}
+                  <tr>
+                    <td>{{ f | replace('_', ' ') }}</td>
+                    <td>{{ v }}</td>
+                  </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="2">No feature importances available</td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <div class="card">
+          <h5 class="muted"><i class="fas fa-map-marker-alt"></i> Churn by State</h5>
+          <canvas id="stateBar" width="400" height="150"></canvas>
+          <table class="table mt-3">
+            <thead>
+              <tr>
+                <th>State</th>
+                <th>Churn %</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if analytics.available and analytics.top_states_by_churn %}
+                {% for state, val in analytics.top_states_by_churn.items() %}
+                  <tr>
+                    <td>{{ state }}</td>
+                    <td>{{ "%.2f%%"|format(val*100) }}</td>
+                  </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="2">No state-level data</td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card">
+          <h5 class="muted"><i class="fas fa-wifi"></i> Churn by Internet Type</h5>
+          <canvas id="inetBar" width="400" height="150"></canvas>
+          <table class="table mt-3">
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Churn %</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if analytics.available and analytics.internet_type_churn %}
+                {% for t, val in analytics.internet_type_churn.items() %}
+                  <tr>
+                    <td>{{ t }}</td>
+                    <td>{{ "%.2f%%"|format(val*100) }}</td>
+                  </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="2">No internet-type data</td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <h5 class="muted"><i class="fas fa-code"></i> Analytics Summary</h5>
+          {% if analytics.available %}
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <div class="p-2 border rounded mb-2">
+                  <small class="text-muted">Total Customers</small>
+                  <div class="h5 mb-0">{{ analytics.n_customers }}</div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="p-2 border rounded mb-2">
+                  <small class="text-muted">Churn Rate</small>
+                  <div class="h5 mb-0 text-danger">{{ "%.1f"|format(analytics.churn_rate * 100) }}%</div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="p-2 border rounded mb-2">
+                  <small class="text-muted">Stay Rate</small>
+                  <div class="h5 mb-0 text-success">{{ "%.1f"|format(analytics.stay_rate * 100) }}%</div>
+                </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <div class="p-2 border rounded mb-2">
+                  <small class="text-muted">Avg Tenure</small>
+                  <div class="h5 mb-0">{{ "%.1f"|format(analytics.avg_tenure) if analytics.avg_tenure else 'N/A' }} months</div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="p-2 border rounded mb-2">
+                  <small class="text-muted">Avg Monthly Charge</small>
+                  <div class="h5 mb-0">${{ "%.2f"|format(analytics.avg_monthly_charge) if analytics.avg_monthly_charge else 'N/A' }}</div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="p-2 border rounded mb-2">
+                  <small class="text-muted">Top State</small>
+                  <div class="h6 mb-0">
+                    {% for state in analytics.top_states_by_churn %}
+                      {% if loop.first %}{{ state }}{% endif %}
+                    {% endfor %}
+                    {% if not analytics.top_states_by_churn %}N/A{% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% if analytics.recommendations %}
+              <h6 class="mt-3">Recommendations:</h6>
+              <ul class="list-unstyled">
+                {% for rec in analytics.recommendations %}
+                  <li class="mb-1"><i class="fas fa-lightbulb text-warning"></i> {{ rec }}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+          {% else %}
+            <p class="text-muted">No analytics data available.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    const analytics = JSON.parse('{{ analytics | tojson | safe }}');
+    console.log('Analytics:', analytics);
+
+    const churnVal = analytics && analytics.available ? analytics.churn_rate : 0;
+    const stayVal  = analytics && analytics.available ? analytics.stay_rate  : 1;
+    console.log('Churn val:', churnVal, 'Stay val:', stayVal);
+    const ctxPie = document.getElementById('churnPie').getContext('2d');
+    new Chart(ctxPie, {
+      type: 'doughnut',
+      data: {
+        labels: ['Churn', 'Stay'],
+        datasets: [{
+          data: [churnVal, stayVal],
+          backgroundColor: ['#ef4444', '#10b981']
+        }]
+      },
+      options: { plugins: { legend: { position: 'bottom' } } }
+    });
+
+    const stateData = analytics && analytics.available && analytics.top_states_by_churn ? analytics.top_states_by_churn : {};
+    const stateLabels = Object.keys(stateData);
+    const stateValues = stateLabels.map(k => +(stateData[k]*100).toFixed(2));
+    console.log('State data:', stateData, stateLabels, stateValues);
+    const ctxState = document.getElementById('stateBar').getContext('2d');
+    new Chart(ctxState, {
+      type: 'bar',
+      data: {
+        labels: stateLabels,
+        datasets: [{
+          label: 'Churn %',
+          data: stateValues,
+          backgroundColor: '#fb7185'
+        }]
+      },
+      options: { scales: { y: { beginAtZero: true } } }
+    });
+
+    const inetData = analytics && analytics.available && analytics.internet_type_churn ? analytics.internet_type_churn : {};
+    const inetLabels = Object.keys(inetData);
+    const inetValues = inetLabels.map(k => +(inetData[k]*100).toFixed(2));
+    console.log('Inet data:', inetData, inetLabels, inetValues);
+    const ctxInet = document.getElementById('inetBar').getContext('2d');
+    new Chart(ctxInet, {
+      type: 'bar',
+      data: {
+        labels: inetLabels,
+        datasets: [{ label: 'Churn %', data: inetValues, backgroundColor: '#60a5fa' }]
+      },
+      options: { scales: { y: { beginAtZero: true } } }
+    });
+  </script>
+</body>
+</html>
