@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Customer - Churn AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            text-decoration: none;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .select-card {
+            background: white;
+            border-radius: 24px;
+            padding: 48px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+
+        .select-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .select-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .select-header h2 {
+            color: #2d3748;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        .select-header p {
+            color: #718096;
+            font-size: 1.05em;
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #2d3748;
+            font-weight: 600;
+            font-size: 1.05em;
+        }
+
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+
+        .form-group select:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .help-text {
+            color: #718096;
+            font-size: 0.9em;
+            margin-top: 8px;
+        }
+
+        .info-box {
+            background: #ebf8ff;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #4299e1;
+            margin: 25px 0;
+        }
+
+        .info-box p {
+            color: #2c5282;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 30px;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 768px) {
+            .select-card {
+                padding: 35px 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/analysis_choice" class="back-btn">
+            <span>←</span>
+            <span>Back to Analysis Choice</span>
+        </a>
+
+        <div class="header">
+            <h1>👤 Individual Customer Analysis</h1>
+            <p>Select a customer from your dataset</p>
+        </div>
+
+        <div class="select-card">
+            <div class="select-header">
+                <div class="select-icon">🔍</div>
+                <h2>Select Customer</h2>
+                <p>Choose a customer to analyze their churn risk</p>
+            </div>
+
+            <form method="POST" action="/predict_individual" id="selectionForm">
+                <div class="form-group">
+                    <label for="customer_select">Select Customer ID</label>
+                    <select name="row_index" id="customer_select" required>
+                        <option value="">-- Choose a customer --</option>
+                        {% for customer_id in customer_ids %}
+                        <option value="{{ loop.index0 }}">{{ customer_id }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="help-text">Choose a customer from the dropdown list</div>
+                </div>
+
+                <div class="info-box">
+                    <p><strong>💡 Tip:</strong> Your dataset contains {{ total_rows }} customers. Select any customer from the dropdown to see their detailed churn risk analysis.</p>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    🎯 Analyse Selected Customer
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('selectionForm').addEventListener('submit', function(e) {
+            const customerSelect = document.getElementById('customer_select');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            if (!customerSelect.value || customerSelect.value === '') {
+                e.preventDefault();
+                alert('Please select a customer from the dropdown');
+                return false;
+            }
+            
+            // Disable button and show loading
+            submitBtn.textContent = '⏳ Analyzing...';
+            submitBtn.disabled = true;
+            
+            // Let form submit
+            return true;
+        });
+        
+        // Debug: Log form submission
+        document.getElementById('selectionForm').addEventListener('submit', function() {
+            console.log('Form submitting with row_index:', document.getElementById('customer_select').value);
+        });
+    </script>
+</body>
+</html>

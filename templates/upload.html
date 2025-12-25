@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Dataset - Churn AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            text-decoration: none;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.25);
+            transform: translateX(-5px);
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .upload-card {
+            background: white;
+            border-radius: 24px;
+            padding: 48px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            margin-bottom: 30px;
+        }
+
+        .alert {
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+
+        .alert-error {
+            background: #fff5f5;
+            border-left: 4px solid #fc8181;
+            color: #c53030;
+        }
+
+        .alert h4 {
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .upload-zone {
+            border: 3px dashed #cbd5e0;
+            border-radius: 16px;
+            padding: 60px 40px;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: #f7fafc;
+            cursor: pointer;
+        }
+
+        .upload-zone:hover {
+            border-color: #667eea;
+            background: #ebf8ff;
+        }
+
+        .upload-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .upload-zone h3 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .upload-zone p {
+            color: #718096;
+            margin-bottom: 25px;
+            font-size: 1.05em;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .btn-upload {
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .btn-upload:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .file-selected {
+            margin-top: 20px;
+            padding: 20px;
+            background: linear-gradient(135deg, #e6fffa 0%, #b2f5ea 100%);
+            border-left: 4px solid #38b2ac;
+            border-radius: 12px;
+            display: none;
+        }
+
+        .file-selected-visible {
+            display: block;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 25px;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .info-box {
+            background: #ebf8ff;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            border-left: 4px solid #4299e1;
+        }
+
+        .info-box h4 {
+            color: #2c5282;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .info-box p, .info-box ul {
+            color: #2d3748;
+            line-height: 1.8;
+        }
+
+        .info-box ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .feature-item {
+            padding: 8px 12px;
+            background: #f7fafc;
+            border-radius: 6px;
+            font-size: 0.9em;
+            color: #4a5568;
+        }
+
+        .feature-item.essential {
+            background: #fef5e7;
+            border-left: 3px solid #f39c12;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .upload-card {
+                padding: 30px 20px;
+            }
+
+            .feature-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-btn">
+            <span>←</span>
+            <span>Back to Home</span>
+        </a>
+
+        <div class="header">
+            <h1>📁 Upload Your Dataset</h1>
+            <p>Upload your customer data CSV file</p>
+        </div>
+
+        {% if error %}
+        <div class="alert alert-error">
+            <h4>❌ Error</h4>
+            <p>{{ error }}</p>
+            {% if show_warning %}
+            <p style="margin-top: 10px;"><strong>Note:</strong> Your dataset must contain these 5 essential features for predictions to work. Please add these columns to your CSV file.</p>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <div class="upload-card">
+            <form method="POST" enctype="multipart/form-data" id="uploadForm">
+                <div class="upload-zone" id="dropZone">
+                    <div class="upload-icon">📊</div>
+                    <h3>Upload Customer Dataset (CSV)</h3>
+                    <p>Drag and drop your file here, or click to browse</p>
+                    <input type="file" name="dataset" accept=".csv" class="file-input" id="fileInput" required>
+                    <button type="button" class="btn-upload" onclick="document.getElementById('fileInput').click()">
+                        Choose CSV File
+                    </button>
+                </div>
+
+                <div class="file-selected" id="fileSelected">
+                    <div style="display: flex; align-items: center; gap: 15px; color: #234e52; font-weight: 600;">
+                        <span style="font-size: 2em;">✅</span>
+                        <div>
+                            <div id="fileName"></div>
+                            <div style="font-size: 0.9em; opacity: 0.8;" id="fileSize"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn" disabled>
+                    🔍 Validate & Continue
+                </button>
+            </form>
+
+            <div class="info-box">
+                <h4>💡 Dataset Requirements</h4>
+                <p><strong>File format:</strong> CSV (.csv)</p>
+                
+                <p style="margin-top: 15px;"><strong>Essential Features (MUST have these 5):</strong></p>
+                <div class="feature-list">
+                    {% for feature in essential_features %}
+                    <div class="feature-item essential">
+                        ⭐ {{ feature.replace('_', ' ').title() }}
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <p style="margin-top: 15px;"><strong>Optional Features:</strong></p>
+                <p style="font-size: 0.95em; color: #4a5568;">
+                    Including more features improves prediction accuracy. The model can use up to {{ total_features }} features total. 
+                    Don't worry if your dataset doesn't have all of them - the system will still work with just the 5 essential features!
+                </p>
+
+                <p style="margin-top: 15px;"><strong>Missing values:</strong></p>
+                <p style="font-size: 0.95em; color: #4a5568;">
+                    If your dataset is missing optional features, the system will use smart default values. 
+                    However, predictions will be more accurate with complete data.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const fileSelected = document.getElementById('fileSelected');
+        const fileName = document.getElementById('fileName');
+        const fileSize = document.getElementById('fileSize');
+        const submitBtn = document.getElementById('submitBtn');
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const sizeInMB = (file.size / (1024 * 1024)).toFixed(2);
+                fileName.textContent = 'File: ' + file.name;
+                fileSize.textContent = 'Size: ' + sizeInMB + ' MB';
+                fileSelected.classList.add('file-selected-visible');
+                submitBtn.disabled = false;
+            }
+        });
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = '#667eea';
+            dropZone.style.background = '#ebf8ff';
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.style.borderColor = '#cbd5e0';
+            dropZone.style.background = '#f7fafc';
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = '#cbd5e0';
+            dropZone.style.background = '#f7fafc';
+            
+            const file = e.dataTransfer.files[0];
+            if (file && file.name.endsWith('.csv')) {
+                fileInput.files = e.dataTransfer.files;
+                const sizeInMB = (file.size / (1024 * 1024)).toFixed(2);
+                fileName.textContent = 'File: ' + file.name;
+                fileSize.textContent = 'Size: ' + sizeInMB + ' MB';
+                fileSelected.classList.add('file-selected-visible');
+                submitBtn.disabled = false;
+            } else {
+                alert('Please upload a CSV file');
+            }
+        });
+
+        document.getElementById('uploadForm').addEventListener('submit', () => {
+            submitBtn.textContent = '⏳ Validating...';
+            submitBtn.disabled = true;
+        });
+    </script>
+</body>
+</html>

@@ -1,101 +1,107 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Churn Prediction Portal</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      margin: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      overflow: hidden;
-      color: #333;
-    }
-
-    .box {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      padding: 50px;
-      border-radius: 20px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-      text-align: center;
-      animation: fadeInUp 1s ease-out;
-      max-width: 90%;
-      width: 450px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    h1 {
-      margin-bottom: 20px;
-      color: #4a5568;
-      font-size: 28px;
-      font-weight: 700;
-    }
-
-    p {
-      color: #718096;
-      font-size: 16px;
-      margin-bottom: 30px;
-      line-height: 1.6;
-    }
-
-    a {
-      display: inline-block;
-      margin: 10px;
-      padding: 15px 30px;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white;
-      border-radius: 12px;
-      font-size: 18px;
-      text-decoration: none;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-      border: none;
-      cursor: pointer;
-    }
-
-    a:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-      background: linear-gradient(135deg, #5a67d8, #6b46c1);
-    }
-
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .icon {
-      font-size: 40px;
-      margin-bottom: 10px;
-      display: block;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Churn Prediction AI</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+        .container { max-width: 700px; width: 100%; text-align: center; }
+        .header { color: white; margin-bottom: 60px; }
+        .header h1 { font-size: 3.5em; margin-bottom: 20px; text-shadow: 3px 3px 10px rgba(0,0,0,0.3); }
+        .header p { font-size: 1.3em; opacity: 0.95; }
+        .cta-card {
+            background: white;
+            border-radius: 30px;
+            padding: 60px 50px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+        .cta-icon { font-size: 6em; margin-bottom: 30px; }
+        .cta-card h2 { color: #1e293b; font-size: 2em; margin-bottom: 20px; }
+        .cta-card p { color: #64748b; font-size: 1.1em; margin-bottom: 40px; line-height: 1.7; }
+        .btn-start {
+            display: inline-block;
+            padding: 22px 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 15px;
+            font-size: 1.3em;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+        .btn-start:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.5);
+        }
+        .features {
+            margin-top: 50px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+        .feature {
+            background: #f8fafc;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: left;
+        }
+        .feature-icon { font-size: 2.5em; margin-bottom: 12px; }
+        .feature h3 { color: #1e293b; margin-bottom: 8px; font-size: 1.1em; }
+        .feature p { color: #64748b; font-size: 0.95em; }
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2.5em; }
+            .cta-card { padding: 40px 30px; }
+            .features { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
-  <div class="box">
-    <h1>Churn Prediction Portal</h1>
-    <p>Welcome to the Churn Prediction Portal. This tool uses a Random Forest model trained on customer data to predict churn likelihood and provide actionable insights.</p>
-
-    <a href="/analyse">
-      <i class="fas fa-chart-line"></i> Analyse Dataset
-    </a>
-    <a href="/predict_form">
-      <i class="fas fa-search"></i> Customer Lookup
-    </a>
-  </div>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Churn Prediction AI</h1>
+            <p>Predict customer churn with machine learning</p>
+        </div>
+        
+        <div class="cta-card">
+            <div class="cta-icon">📊</div>
+            <h2>Start Your Analysis</h2>
+            <p>Upload your customer dataset and get instant churn predictions powered by AI. Identify at-risk customers and take action before they leave.</p>
+            <a href="/upload" class="btn-start">📁 Upload Dataset</a>
+            
+            <div class="features">
+                <div class="feature">
+                    <div class="feature-icon">🔍</div>
+                    <h3>Smart Validation</h3>
+                    <p>Automatic feature detection and validation</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Instant Analysis</h3>
+                    <p>Batch or individual customer predictions</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📈</div>
+                    <h3>Visual Analytics</h3>
+                    <p>Interactive charts and insights</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">💡</div>
+                    <h3>Recommendations</h3>
+                    <p>Actionable retention strategies</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Analysis Type - Churn AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            text-decoration: none;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .dataset-info {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 20px 30px;
+            border-radius: 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            color: white;
+            font-size: 1.1em;
+        }
+
+        .warning-box {
+            background: rgba(255, 204, 0, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 15px 25px;
+            border-radius: 12px;
+            color: white;
+            margin-top: 20px;
+            border: 2px solid rgba(255, 204, 0, 0.5);
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .choice-card {
+            background: white;
+            border-radius: 24px;
+            padding: 45px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+        }
+
+        .choice-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+        }
+
+        .card-icon {
+            font-size: 4.5em;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .card-title {
+            font-size: 1.8em;
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .card-description {
+            color: #4a5568;
+            line-height: 1.8;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 1.05em;
+        }
+
+        .card-features {
+            background: #f7fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .card-features ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .card-features li {
+            padding: 8px 0;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95em;
+        }
+
+        .card-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            display: block;
+            text-decoration: none;
+        }
+
+        .card-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .badge-recommended {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+        }
+
+        .badge-info {
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .cards-container {
+                grid-template-columns: 1fr;
+            }
+
+            .choice-card {
+                padding: 35px 25px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/upload" class="back-btn">
+            <span>←</span>
+            <span>Upload Different Dataset</span>
+        </a>
+
+        <div class="header">
+            <h1>✅ Dataset Validated</h1>
+            <div class="dataset-info">
+                <span style="font-size: 2em;">📊</span>
+                <div>
+                    <strong>{{ filename }}</strong><br>
+                    <span style="opacity: 0.9;">{{ num_customers }} customers ready for analysis</span>
+                </div>
+            </div>
+
+            {% if missing_count > 0 %}
+            <div class="warning-box">
+                <strong>⚠️ Accuracy Note:</strong> Dataset is missing {{ missing_count }} optional features. Predictions will work but may be less accurate.
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="cards-container">
+            <div class="choice-card" style="border: 3px solid #48bb78;">
+                <div class="card-icon">📊</div>
+                <div class="card-title">
+                    Batch Analysis
+                    <div class="badge badge-recommended">⭐ Recommended</div>
+                </div>
+                <p class="card-description">
+                    Analyze your entire dataset at once to get comprehensive insights and identify all high-risk customers
+                </p>
+                <div class="card-features">
+                    <ul>
+                        <li>✓ Predict churn for all {{ num_customers }} customers</li>
+                        <li>✓ Overall churn rate and statistics</li>
+                        <li>✓ Identify high-risk segments</li>
+                        <li>✓ Downloadable detailed report</li>
+                        <li>✓ Visual analytics dashboard</li>
+                    </ul>
+                </div>
+                <a href="/batch_analysis" class="card-btn">📈 Analyse All Customers</a>
+            </div>
+
+            <div class="choice-card" style="border: 3px solid #4299e1;">
+                <div class="card-icon">👤</div>
+                <div class="card-title">
+                    Individual Customer
+                    <div class="badge badge-info">🔍 Deep Dive</div>
+                </div>
+                <p class="card-description">
+                    Select a specific customer from your dataset for detailed churn risk analysis and personalized insights
+                </p>
+                <div class="card-features">
+                    <ul>
+                        <li>✓ Choose any customer from your dataset</li>
+                        <li>✓ Detailed churn probability</li>
+                        <li>✓ Feature importance breakdown</li>
+                        <li>✓ Personalised retention strategies</li>
+                        <li>✓ Complete customer profile view</li>
+                    </ul>
+                </div>
+                <a href="/individual_analysis" class="card-btn">🎯 Analyse One Customer</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
