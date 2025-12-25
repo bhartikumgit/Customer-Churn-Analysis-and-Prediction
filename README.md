@@ -3,12 +3,10 @@
 Overview
 
 This project focuses on analyzing customer churn and retention patterns using historical customer data and deploying a machine learning–based churn prediction system. The goal is to identify high-risk customers, understand the drivers of churn, and enable data-driven retention strategies.
-
 The project covers the full pipeline: data analysis → model training → evaluation → deployment via a Flask web application.
 
-Problem Statement-
-
-Customer churn directly impacts revenue and growth. The objective of this project is to:
+#Problem Statement-
+##Customer churn directly impacts revenue and growth. The objective of this project is to:
 
 Analyze customer behavior and engagement data
 
@@ -18,7 +16,7 @@ Predict whether a customer is likely to churn
 
 Provide both individual and batch-level churn analysis through a web interface
 
-Key Features
+##Key Features
 
 Exploratory data analysis on customer and churn-related variables
 
@@ -36,7 +34,7 @@ Batch churn analysis via file upload
 
 Modular and reproducible project structure
 
-Tech Stack
+##Tech Stack
 
 Programming & Analysis
 
@@ -60,7 +58,7 @@ Flask
 
 HTML (Jinja templates)
 
-Project Structure
+##Project Structure
 churn-notebook/
 │
 ├── app.py                  # Main Flask application
@@ -87,34 +85,4 @@ churn-notebook/
 ├── requirements.txt
 ├── README.md
 
-Model Workflow
 
-Data Preparation
-
-Cleaning and preprocessing customer data
-
-Encoding categorical variables
-
-Feature validation to ensure inference consistency
-
-Model Training
-
-Random Forest classifier
-
-Hyperparameter tuning (basic)
-
-Model persistence using pickle
-
-Evaluation
-
-Confusion matrix
-
-ROC curve
-
-Feature importance analysis
-
-Deployment
-
-Flask-based UI
-
-Individual and batch predictions supported
